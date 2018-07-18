@@ -2,6 +2,7 @@
 #include "opencv2/highgui/highgui.hpp"      
 #include "opencv2/imgproc/imgproc.hpp"  
 #include "opencv2/video/tracking.hpp"  
+
 #include <iostream>      
 
 using namespace cv;
@@ -26,7 +27,7 @@ void onMouse(int event, int x, int y, int flags, void* ustc); //鼠标回调函数
 
 int main(int argc, char*argv[])
 {
-	VideoCapture video(argv[1]);
+	VideoCapture video("VID_20180718_102220.mp4");
 	double fps = video.get(CV_CAP_PROP_FPS); //获取视频帧率    
 	double pauseTime = 1000 / fps; //两幅画面中间间隔    
 	namedWindow("跟踪木头人", 0);
@@ -92,11 +93,11 @@ void onMouse(int event, int x, int y, int flags, void *ustc)
 		leftButtonDownFlag = false;
 		rect = Rect(originalPoint, processPoint);
 		rectImage = image(rect); //子图像显示    
-		imshow("Sub Image", rectImage);
+		//imshow("Sub Image", rectImage);
 		cvtColor(rectImage, targetImageHSV, CV_RGB2HSV);
-		imshow("targetImageHSV", targetImageHSV);
+		//imshow("targetImageHSV", targetImageHSV);
 		calcHist(&targetImageHSV, 2, channels, Mat(), dstHist, 1, &histSize, &histRange, true, false);
 		normalize(dstHist, dstHist, 0, 255, CV_MINMAX);
-		imshow("dstHist", dstHist);
+		//imshow("dstHist", dstHist);
 	}
 }
