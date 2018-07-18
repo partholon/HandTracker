@@ -119,7 +119,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\skin\SkinSegmenter.cpp" />
     <ClCompile Include="源.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\skin\skin.vcxproj">
+      <Project>{49801d3e-c6cd-40d4-880a-722d04572216}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\skin\opencv.h" />
+    <ClInclude Include="..\skin\SkinSegmenter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

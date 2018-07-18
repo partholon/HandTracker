@@ -24,9 +24,11 @@ private:
 	cv::Mat getWatershed();
 
 public:
-	SkinSegmenter(const char* filename);
+	SkinSegmenter();
 
 	~SkinSegmenter();
+
+	void setImage(const cv::Mat image);
 
 	bool getRect(cv::Rect& rect);
 

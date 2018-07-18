@@ -29,9 +29,17 @@ Mat WatershedSegmenter::getWatersheds() {
 	return tmp;
 }
 
-SkinSegmenter::SkinSegmenter(const char* filename) {
-	origin = imread(filename);
-	resize(origin, origin, Size(0, 0), 0.15, 0.15, INTER_AREA);
+SkinSegmenter::SkinSegmenter() {
+
+}
+
+SkinSegmenter::~SkinSegmenter() {
+
+}
+
+void SkinSegmenter::setImage(const cv::Mat image) {
+	origin = image;
+	//resize(origin, origin, Size(0, 0), 0.15, 0.15, INTER_AREA);
 	//imshow("origin", origin);
 
 	//转换颜色空间
@@ -48,16 +56,12 @@ SkinSegmenter::SkinSegmenter(const char* filename) {
 		uchar* pointCb = Cb.ptr<uchar>(i);
 		uchar* pointbin = binImage.ptr<uchar>(i);
 		for (int j = 1; j < Cb.cols - 1; j++) {
-			if ((pointCr[j] > 133) && (pointCr[j] < 173) && (pointCb[j] > 77) && (pointCb[j] < 127))
+			if ((pointCr[j] > 135) && (pointCr[j] < 180) && (pointCb[j] > 85) && (pointCb[j] < 135))
 				pointbin[j] = 255;
 			else
 				pointbin[j] = 0;
 		}
 	}
-}
-
-SkinSegmenter::~SkinSegmenter() {
-
 }
 
 //八向联通确定边界
@@ -159,7 +163,9 @@ void SkinSegmenter::eightConnections(const Mat& binImg, int& labelNum,
 
 Mat SkinSegmenter::getWatershed() {
 	//this->binImage
-	dilate(binImage, binImage, Mat());
+	//dilate(binImage, binImage, Mat());
+	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));   // 开运算去除噪点
+	morphologyEx(binImage, binImage, MORPH_OPEN, element);
 
 	//watershed algorithm
 	erode(binImage, frontGround, Mat(), Point(-1, -1), 6);
@@ -175,6 +181,7 @@ Mat SkinSegmenter::getWatershed() {
 	segmenter.process(origin);
 	Mat waterShed;
 	waterShed = segmenter.getWatersheds();
+	//imshow("watershed", waterShed);
 	//Get area
 	threshold(waterShed, waterShed, 1, 1, THRESH_BINARY_INV);
 	//imshow("watershed", waterShed);
@@ -231,7 +238,7 @@ bool SkinSegmenter::getRect(Rect& rect) {
 	//给符合阈值条件的位置画框
 	for (int i = 0; i < label; i++)
 	{
-		if (/*(simi[i]<0.02) &&*/ (fuseratio[i] < 0.65)) {
+		if (/*(simi[i]<0.02) &&*/ (fuseratio[i] < 0.8)) { //0.65->0.8
 			rect = Rect(Point(xmin[i], ymin[i]), Point(xmax[i], ymax[i]));
 			return true;
 		}
